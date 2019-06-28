@@ -7,10 +7,11 @@
     Reference: https://gist.github.com/sloria/7001839#file-bobp-python-md
 """
 import hashlib
-import requests
-import os
+import glob
 
 from shutil import unpack_archive
+
+import requests
 
 
 URL = 'http://vis-www.cs.umass.edu/lfw/lfw.tgz'
@@ -36,9 +37,9 @@ def lfw_acquisition(url, md5sum, path=None):
         path = "."
 
     dataset_file = url.split('/')[-1]
-    dataset_file_name = dataset_file.split('.')[0]
+    folder = dataset_file.split('.')[0]
 
-    if len(url) > 0 and len(md5sum) > 0 and len(dataset_file) > 0:
+    if url and md5sum and dataset_file:
         req = requests.get(url)
 
         with open(dataset_file, "wb") as data:
@@ -49,24 +50,28 @@ def lfw_acquisition(url, md5sum, path=None):
         if get_md5 != md5sum:
             raise FileExistsError("The file is not validated")
 
-        else:
-            unpack_archive(dataset_file, path)
-            files = []
+        unpack_archive(dataset_file, path)
+        dataset = []
 
-            # r=root, d=directories, f = files
-            for r, f in os.walk('{0}/'.format(dataset_file_name)):
+        files = [fls for fls in glob.glob('{0}/'.format(folder) + "**/*.jpg",
+                                          recursive=True)]
 
-                for file in f:
+        for fls in files:
+            dataset.append(fls)
 
-                    if '.jpg' in file:
-                        files.append(os.path.join(r, file))
+        return dataset
 
-            return files
-
-    else:
-        raise AttributeError("Check the parameters passed to the function")
+    return AttributeError("Check the parameters passed to the function")
 
 
 
 if __name__ == "__main__":
-    print(lfw_acquisition(url=URL, md5sum=MD5SUM, path='.'))[0]
+    DATASET_LIST = lfw_acquisition(url=URL, md5sum=MD5SUM, path='.')
+    print(DATASET_LIST[0])
+    print(len(DATASET_LIST))
+
+"""
+real    2m18.751s
+user    0m9.500s
+sys     0m38.875s
+"""

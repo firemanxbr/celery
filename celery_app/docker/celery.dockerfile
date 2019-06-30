@@ -1,4 +1,4 @@
-FROM python:3.7.3-alpine3.10
+FROM python:3.6.4-alpine3.7
 
 COPY requirements/celery_app.txt /celery_app/requirements/celery_app.txt
 

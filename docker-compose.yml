@@ -19,7 +19,7 @@ services:
       context: celery_app
       dockerfile: docker/celery.dockerfile
     volumes:
-      - /celery_app
+      - /celery_app/data
     links:
       - rabbitmq
     depends_on:

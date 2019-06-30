@@ -40,8 +40,8 @@ def do_task(self, url, md5sum, path=None):
     """
     """
     try:
-        DATASET_LIST = lfw_acquisition(url=URL, md5sum=MD5SUM, path='.')
-
+        DATASET_LIST = lfw_acquisition(url=URL, md5sum=MD5SUM, path='/celery_app/data/')
+        return DATASET_LIST
         
     except Exception as se:
         self.retry(countdown=10, exc=se)

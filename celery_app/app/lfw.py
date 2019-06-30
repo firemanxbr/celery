@@ -14,11 +14,6 @@ from shutil import unpack_archive
 import requests
 
 
-URL = 'http://vis-www.cs.umass.edu/lfw/lfw.tgz'
-MD5SUM = 'a17d05bd522c52d84eca14327a23d494'
-
-
-
 def lfw_acquisition(url, md5sum, path=None):
     """
     LFW acquisition is the method to download, validate,
@@ -65,10 +60,10 @@ def lfw_acquisition(url, md5sum, path=None):
 
 
 
-if __name__ == "__main__":
-    DATASET_LIST = lfw_acquisition(url=URL, md5sum=MD5SUM, path='.')
-    print(DATASET_LIST[0])
-    print(len(DATASET_LIST))
+#if __name__ == "__main__":
+#    DATASET_LIST = lfw_acquisition(url=URL, md5sum=MD5SUM, path='.')
+#    print(DATASET_LIST[0])
+#    print(len(DATASET_LIST))
 
 """
 real    2m18.751s

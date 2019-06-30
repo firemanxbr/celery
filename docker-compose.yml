@@ -1,21 +1,39 @@
-version: '2'
-services:
-    rabbit:
-        hostname: rabbit
-        image: rabbitmq:3.7.15
-        environment:
-            - RABBITMQ_DEFAULT_USER=admin
-            - RABBITMQ_DEFAULT_PASS=mypass
-        ports:
-            - "5672:5672"
+version: "2"
 
-    worker:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        volumes:
-            - .:/app
-        links:
-            - rabbit
-        depends_on:
-            - rabbit
+services:
+  rabbitmq:
+    # Message broker for Celery
+    image: rabbitmq:3.7-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=celery_user
+      - RABBITMQ_DEFAULT_PASS=secret
+      - RABBITMQ_DEFAULT_VHOST=celery_app
+    ports:
+      # The rabbitMQ management plugin - running on http://localhost:15672
+      - "15672:15672"
+      - "5672:5672"
+
+  celery:
+    # Python application which run the Celery worker
+    build:
+      context: celery_app
+      dockerfile: docker/celery.dockerfile
+    volumes:
+      - /celery_app
+    links:
+      - rabbitmq
+    depends_on:
+      - rabbitmq
+
+  flower:
+    # Monitoring application - running on http://localhost:5555
+    build:
+      context: celery_app
+      dockerfile: docker/flower.dockerfile
+    links:
+      - celery
+      - rabbitmq
+    depends_on:
+      - celery
+    ports:
+      - "5555:5555"

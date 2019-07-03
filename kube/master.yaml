@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      volumes:
+        - name: task-pv-storage
+          persistentVolumeClaim:
+            claimName: task-pv-claim
+      containers:
+      - name: master
+        image: firemanxbr/veriff:0.1.13
+        env:
+          - name: FLASK_APP
+            value: "app.py"
+        command: ["flask"]
+        args: ["run", "--host=0.0.0.0"]
+        volumeMounts:
+          - mountPath: "/svc/images/"
+            name: task-pv-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: worker
+  name: master
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 32764
+    port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: worker
+  type: NodePort

@@ -175,7 +175,7 @@ https://cloud.docker.com/u/firemanxbr/repository/docker/firemanxbr/veriff
 
 Following below the numbers generated. With more time and resources will be substantially increased these numbers could be better:
 
-The Logfile it's available here: [Logfile in Text]([logs-from-producer-in-producer-7977b4b95c-f8lhl.txt)
+The Logfile it's available here: [Logfile in Text](logs-from-producer-in-producer-7977b4b95c-f8lhl.txt)
 
 | Total of Photos | Failed(Exceptions/Hardware/Libraries) | Succeeded | Total Time to Finish |
 | :-------: | :------------: | :-------------: | :--------------: |

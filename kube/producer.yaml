@@ -15,7 +15,7 @@ spec:
             claimName: task-pv-claim
       containers:
       - name: producer
-        image: firemanxbr/veriff:0.1.33
+        image: firemanxbr/veriff:0.1.34
         command: ["python3"]
         args: ["entrypoint.py"]
         volumeMounts:

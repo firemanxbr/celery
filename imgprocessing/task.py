@@ -20,5 +20,5 @@ def face_rec(self, image_path):
         photo_encoding = list(face_recognition.face_encodings(photo)[0])
         return image_path, photo_encoding
 
-    except IndexError as err:
-        return image_path, err
+    except IndexError:
+        return image_path, None

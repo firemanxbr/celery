@@ -15,7 +15,7 @@ spec:
             claimName: task-pv-claim
       containers:
       - name: celery-flower
-        image: firemanxbr/veriff:0.1.33
+        image: firemanxbr/veriff:0.1.34
         command: ["celery"]
         args: ["flower", "-A", "task", "--address=0.0.0.0", "--port=5555"]
         volumeMounts:

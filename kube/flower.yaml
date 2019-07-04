@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: flower
+  name: celery-flower
 spec:
   replicas: 1
   template:
@@ -14,8 +14,8 @@ spec:
           persistentVolumeClaim:
             claimName: task-pv-claim
       containers:
-      - name: flower
-        image: firemanxbr/veriff:0.1.20
+      - name: celery-flower
+        image: firemanxbr/veriff:0.1.31
         command: ["celery"]
         args: ["flower", "-A", "task", "--address=0.0.0.0", "--port=5555"]
         volumeMounts:
@@ -27,7 +27,7 @@ kind: Service
 metadata:
   labels:
     app: flower
-  name: flower
+  name: celery-flower
 spec:
   externalTrafficPolicy: Cluster
   ports:

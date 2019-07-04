@@ -1,79 +1,64 @@
-'''
-    Average Calculation Method
-'''
-import logging
-import json
+from lfw import lfw_acquisition
+from task import face_rec
+
 import numpy
 import time
-import os, fnmatch
-
-from task import face_rec
-from lfw import lfw_acquisition
 
 
+URL = 'http://vis-www.cs.umass.edu/lfw/lfw.tgz'
+MD5SUM = 'a17d05bd522c52d84eca14327a23d494'
 PATH = '/svc/images'
 
 
 if __name__ == "__main__":
-    list_files = os.listdir('{0}/'.format(PATH))
-    pattern = "*.log"
 
-    for entry in list_files:
-        if fnmatch.fnmatch(entry, pattern):
-            file_path = entry
+    try:
+        print("############################################################")
+        print(f'{time.strftime("%b %d %Y %H:%M:%S:%s", time.localtime())} - Starting Producer Process...')
+        dataset_list = lfw_acquisition(url=URL, md5sum=MD5SUM, path=PATH)
 
-    while not os.path.exists(file_path):
-        time.sleep(1)
-
-    if os.path.isfile(file_path):
-        log = logging.getLogger('master')
-        handler = logging.FileHandler('{0}/{1}.log'.format(PATH, uid))
-        handler.setLevel(logging.INFO)
-        formatter = logging.Formatter("%(asctime)s - %(message)s")
-        handler.setFormatter(formatter)
-        log.addHandler(handler)
-
-        url_file = '{0}/url'.format(PATH)
-
-        with open(url_file) as read_file:
-            url = read_file.read()
-
-        md5sum_file = '{0}/md5sum'.format(PATH)
-
-        with open(md5sum_file) as read_file:
-            md5sum = read_file.read()
-
-        log.info('Starting Master Process...')
-
-        dataset_list = lfw_acquisition(url=url, md5sum=md5sum, path=PATH)
-
-        log.info('Starting Creating Tasks...')
+        print(f'{time.strftime("%b %d %Y %H:%M:%S:%s", time.localtime())} - Starting Creating Tasks...')
         results = []
 
-        for data in dataset_list[:10]:
+        for data in dataset_list:
             results.append(face_rec.delay(image_path=data))
 
         total_tasks = len(results)
+        
+        print(f'{time.strftime("%b %d %Y %H:%M:%S:%s", time.localtime())} - Total of Tasks Created: {total_tasks}')
+        print(f'{time.strftime("%b %d %Y %H:%M:%S:%s", time.localtime())} - Getting Tasks Done...')
+
         tasks_done = []
-        count = 0
 
-        log.info('Total of Tasks Created: %s' % total_tasks)
-        log.info('Getting Tasks Done...')
-
-        while count < total_tasks:
-
-            for query in results:
+        while results:
+            for index, query in enumerate(results):
                 if query.ready():
-                    tasks_done.append(query.get(timeout=10))
-                    count += 1
+                    tasks_done.append(query.get(timeout=3600))
+                    del(results[index])
+            time.sleep(0.1)
 
-        log.info('Calculating Average Vectors...')
+        total_tasks_done = len(tasks_done)
+
+        print(f'{time.strftime("%b %d %Y %H:%M:%S:%s", time.localtime())} - Total of Tasks Finished: {total_tasks_done}')
+        print(f'{time.strftime("%b %d %Y %H:%M:%S:%s", time.localtime())} - Calculating Average Vectors...')
 
         average = numpy.array(tasks_done[0][1])
+        photos = []
 
         for done in tasks_done[1:]:
-
             if done[1] is not None:
+                photos.append(done[0])
                 average = (average + numpy.array(done[1])) / 2
 
-        log.info('Result of calculation the average of values: %s' % average)
+        total_photos = len(photos)
+
+        print(f'{time.strftime("%b %d %Y %H:%M:%S:%s", time.localtime())} - Total of Photos Processed: {total_photos}')
+        print(f'{time.strftime("%b %d %Y %H:%M:%S:%s", time.localtime())} - Result of calculation the average of values:')
+        print(f'{average}')
+        print("############################################################")
+
+        while True:
+            time.sleep(1)
+
+    except Exception as err:
+        print('[FAIL] - ', err)

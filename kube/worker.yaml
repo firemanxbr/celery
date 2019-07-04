@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: worker
 spec:
-  replicas: 2
+  replicas: 4
   template:
     metadata:
       labels:
@@ -15,9 +15,9 @@ spec:
             claimName: task-pv-claim
       containers:
       - name: worker
-        image: firemanxbr/veriff:0.1.20
+        image: firemanxbr/veriff:0.1.31
         command: ["celery"]
-        args: ["-A", "task", "worker", "--loglevel=info"]
+        args: ["-A", "task", "worker", "--loglevel=info", "-Ofair"]
         volumeMounts:
           - mountPath: "/svc/images/"
             name: task-pv-storage

@@ -47,6 +47,7 @@ def lfw_acquisition(url, md5sum, path=None):
 
         unpack_archive(dataset_file, path)
         dataset = []
+
         files = []
 
         for fls in glob.glob('{0}/{1}/'.format(path, folder) + "**/*.jpg",
@@ -55,7 +56,7 @@ def lfw_acquisition(url, md5sum, path=None):
 
         for fls in files:
             dataset.append(fls)
-
+        
         return dataset
 
     return AttributeError("Check the parameters passed to the function")

@@ -1,21 +1,21 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: average
+  name: producer
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: average
+        app: producer
     spec:
       volumes:
         - name: task-pv-storage
           persistentVolumeClaim:
             claimName: task-pv-claim
       containers:
-      - name: average
-        image: firemanxbr/veriff:0.1.20
+      - name: producer
+        image: firemanxbr/veriff:0.1.31
         command: ["python3"]
         args: ["entrypoint.py"]
         volumeMounts:

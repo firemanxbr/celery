@@ -1,23 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: worker
+  name: average
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
-        app: worker
+        app: average
     spec:
       volumes:
         - name: task-pv-storage
           persistentVolumeClaim:
             claimName: task-pv-claim
       containers:
-      - name: worker
+      - name: average
         image: firemanxbr/veriff:0.1.20
-        command: ["celery"]
-        args: ["-A", "task", "worker", "--loglevel=info"]
+        command: ["python3"]
+        args: ["entrypoint.py"]
         volumeMounts:
           - mountPath: "/svc/images/"
             name: task-pv-storage

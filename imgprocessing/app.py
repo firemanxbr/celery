@@ -37,11 +37,11 @@ def status(uid):
     Function to show the results
     '''
     log_file = '{0}/{1}.log'.format(PATH, uid)
-    
+
     if not os.path.isfile(log_file):
         return Response('Log still not available.', mimetype='text/txt')
-    
-    with open(log_file) as f:
-        content = f.read()
-    
+
+    with open(log_file) as read_file:
+        content = read_file.read()
+
     return Response(content.encode(), mimetype='text/txt')

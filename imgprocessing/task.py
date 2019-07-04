@@ -1,23 +1,22 @@
-import time
-import numpy
-import face_recognition
-import logging
+'''
+    Celery Tasks that will be run by workers containers
+'''
 import json
-import subprocess
+import logging
+import time
 
 from celery import Celery
 
-from lfw import lfw_acquisition
+import face_recognition
 
 
 app = Celery('task',
              broker='amqp://imgprocessing:imgprocessing@rabbitmq:5672/imgprocessing',
              backend='amqp://imgprocessing:imgprocessing@rabbitmq:5672/imgprocessing')
 
-URL = 'http://vis-www.cs.umass.edu/lfw/lfw.tgz'
-MD5SUM = 'a17d05bd522c52d84eca14327a23d494'
+#URL = 'http://vis-www.cs.umass.edu/lfw/lfw.tgz'
+#MD5SUM = 'a17d05bd522c52d84eca14327a23d494'
 PATH = '/svc/images'
-LOCAL_TIME = time.localtime()
 
 
 @app.task
@@ -35,54 +34,18 @@ def master(url, uid, md5sum=None):
     log.addHandler(handler)
 
     log.info('Starting Producer Process...')
-    
-    if url and md5sum:
-        DATASET_LIST = lfw_acquisition(url=url, md5sum=md5sum, path=PATH)
 
-    else:
-        DATASET_LIST = lfw_acquisition(url=URL, md5sum=MD5SUM, path=PATH)
+    url_file = '{0}/url'.format(PATH)
 
-    log.info('Starting Creating Tasks...')
+    with open(url_file, "w") as write_file:
+        write_file.write(url)  
 
-    results = []
+    md5sum_file = '{0}/md5sum'.format(PATH)
 
-    # LIMITED in 10 Images !!!
-    for data in DATASET_LIST[:10]:
-        results.append(face_rec.delay(image_path=data))
+    with open(md5sum_file, "w") as write_file:
+        write_file.write(md5sum)
 
-    total_tasks = len(results)
-    log.info('Total of tasks added: {0}'.format(total_tasks))
-
-    tasks_done = []
-    count = 0
-    
-    log.info('Getting Tasks Done...')
-
-    print('RESULTS: ', results)
-
-    while count < total_tasks:
-
-        for query in results:
-            if query.ready():
-                print('QUERY: ', query)
-                command = subprocess.run(['python3', 'task_result.py', '%s' % query], stdout=subprocess.PIPE)
-                content = command.stdout.decode('utf-8')
-                print('CONTENT: ', content)
-                print('TYPE: ', type(content))
-                tasks_done.append(list(content))
-                count += 1
-
-    print('TASKS DONE: ', tasks_done)
-
-    log.info('Total of tasks finished: {0}'.format(count))
-    log.info('Calculating Average Vectors...')
-
-    average = numpy.array(tasks_done[0][1])
-
-    for done in tasks_done[1:]:
-        average = (average + numpy.array(done[1])) / 2
-
-    log.info('Result of calculation the average of photos: {0}'.format(average))
+    return uid
 
 
 @app.task

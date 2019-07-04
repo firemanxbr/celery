@@ -9,7 +9,7 @@ RUN pip install requests
 RUN pip install flask
 RUN pip install flower
 
-COPY task.py task.py
 COPY app.py app.py
-COPY lfw.py lfw.py 
-COPY task_result.py task_result.py
+COPY entrypoint.py entrypoint.py
+COPY lfw.py lfw.py
+COPY task.py task.py

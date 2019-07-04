@@ -9,12 +9,16 @@ app = Celery('task',
 
 
 @app.task(bind=True, autoretry_for=(Exception,), exponential_backoff=2,
-          retry_kwargs={'max_retries': 10}, retry_jitter=False)
+          retry_kwargs={'max_retries': 5}, retry_jitter=False)
 def face_rec(self, image_path):
     """
     Function to retry the vectors from a photo
     """
     photo = face_recognition.load_image_file(image_path)
-    photo_encoding = list(face_recognition.face_encodings(photo)[0])
+    
+    try:
+        photo_encoding = list(face_recognition.face_encodings(photo)[0])
+        return image_path, photo_encoding
 
-    return image_path, photo_encoding
+    except IndexError as err:
+        return image_path, err

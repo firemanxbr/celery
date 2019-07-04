@@ -15,7 +15,7 @@ spec:
             claimName: task-pv-claim
       containers:
       - name: worker
-        image: firemanxbr/veriff:0.1.31
+        image: firemanxbr/veriff:0.1.33
         command: ["celery"]
         args: ["-A", "task", "worker", "--loglevel=info", "-Ofair"]
         volumeMounts:

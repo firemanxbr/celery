@@ -165,11 +165,23 @@ Into the Flower web interface is possible to check in details all tasks sent, re
 
 ![Producer](doc/images/producer-logs.png)
 
-
 ## Report and metrics reached
 
 Following below the numbers generated with this domestic hardware and resources. With more time and resources will be substantially increased these numbers could be better:
 
+IMAGES HERE!!!!
 
 ## TODO/Bottlenecks
 
+Some suggestions to improve the current solution:
+
+* Create a better human interface to manage the whole process. (API + Swagger + Flask)
+* Create a cluster to RabbitMQ service.
+* Create a cluster to Producer service.
+* Improve the control of Exceptions and use of hardware resource.
+* Implementing the CI and gateways of software quality(pylint, pep8, pyflakes).
+* Implementing the automation to build the new container images.
+* Implementing the CD process to delivery automaticly the new releases generate on Git repository.
+* Improve the limitations of resources in use by containers in general.
+* Implement the configuration maps inside of Kubernetes.
+* Add credentials to Secrets of Kubernetes or another KeyVault solution.

@@ -1,13 +1,13 @@
 # Introduction
 
-This is the documentation regarding the challenge proposed by **Veriff** to **Senior Python Engineer** position to calculate the value of the average face embedding vector across a large dataset of faces/photos.
+This is the documentation regarding the personal project to calculate the value of the average face embedding vector across a large dataset of faces/photos.
 
 ## Architecture
 
 ![Architecture](doc/images/architecture.png)
 This is the first release of the architecture proposal. Each box have an indicator that defines the factor of scalability, for example, 1/1 - [ ] Minimal/Maximum;
 
-**Note:** Regarding of this challenge, was used a MacBook Pro, the tools mentioned in this document, and the code created respecting the requirements received.
+**Note:** Regarding of this project, was used a MacBook Pro, the tools mentioned in this document, and the code created respecting the requirements received.
 
 ### RabbitMQ
 
@@ -41,7 +41,7 @@ The requirements necessary to reproduce, test or run the solution:
 
 The first action to reproduce this workforce will be clone the repositorie below:
 
-https://github.com/firemanxbr/veriff
+https://github.com/firemanxbr/face_recognition
 
 After attending all requirements, installing and configuring the tools using the official documentation from each place, we can start our kubernetes/minikube.
 
